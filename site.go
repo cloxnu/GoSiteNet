@@ -42,20 +42,20 @@ func GetSiteInfo(urlString string) *Site {
 		return nil
 	}
 
-	site := Site{
+	site := Site {
 		Url: urlString,
 		Links: make(map[string]void),
-	}
-	u, err := url.Parse(urlString)
-	if err != nil {
-		log.Println("Err: url parse error, ", err)
-		return &site
 	}
 
 	// Read
 	// Find title
 	site.Title = doc.Find("title").Contents().Text()
 
+	u, err := url.Parse(urlString)
+	if err != nil {
+		log.Println("Err: url parse error, ", err)
+		return &site
+	}
 	doc.Find("a").Each(func(i int, selection *goquery.Selection) {
 		link, exist := selection.Attr("href")
 		if exist {
