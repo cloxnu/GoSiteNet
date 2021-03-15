@@ -7,11 +7,14 @@ import (
 	"net/url"
 )
 
+type void struct {}
+var v void
+
 type Site struct {
 	Url   string
 	Title string
 	Desc  string
-	Links []string
+	Links map[string]void
 }
 
 func GetSiteInfo(urlString string) *Site {
@@ -39,7 +42,10 @@ func GetSiteInfo(urlString string) *Site {
 		return nil
 	}
 
-	site := Site{ Url: urlString }
+	site := Site{
+		Url: urlString,
+		Links: make(map[string]void),
+	}
 	u, err := url.Parse(urlString)
 	if err != nil {
 		log.Println("Err: url parse error, ", err)
@@ -58,7 +64,7 @@ func GetSiteInfo(urlString string) *Site {
 				log.Println("Err: link's url parse error, ", err)
 				return
 			}
-			site.Links = append(site.Links, u.ResolveReference(l).String())
+			site.Links[u.ResolveReference(l).String()] = v
 		}
 	})
 
