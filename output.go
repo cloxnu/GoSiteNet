@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"os"
+	"path"
+	"time"
 )
 
 func isFileExist(path string) bool {
@@ -33,24 +36,25 @@ func printNet(n *net, site *Site, done *map[string]void, res *string, depth int)
 	}
 }
 
-func outputMarkdown(n *net, path string) {
+func outputMarkdown(n *net, dir string) {
 	fmt.Println("Markdown outputting...")
 	var file *os.File
 	var err error
 
-	//pathUrl, err := url.Parse(path)
-	//if err != nil {
-	//	log.Println("Err: path parse error, ", err)
-	//	return
-	//}
-	//fileName, _ := url.Parse("output.md")
+	pathUrl, err := url.Parse(dir)
+	if err != nil {
+		log.Println("Err: path parse error, ", err)
+		return
+	}
+	dir = path.Join(pathUrl.Path, time.Now().Format("2006-01-02-15-04-05") + "_output.md")
+	//fileName, _ := url.Parse("./" + time.Now().Format("2006-01-02-15-04-05") + "_output.md")
 	//path = pathUrl.ResolveReference(fileName).String()
-	path += "/output.md"
+	//path += "/" + time.Now().Format("2006-01-02-15-04-05") + "_output.md"
 
-	if isFileExist(path) {
-		file, err = os.OpenFile(path, os.O_CREATE | os.O_WRONLY, 0666)
+	if isFileExist(dir) {
+		file, err = os.OpenFile(dir, os.O_CREATE | os.O_WRONLY, 0666)
 	} else {
-		file, err = os.Create(path)
+		file, err = os.Create(dir)
 	}
 	if err != nil {
 		log.Println("Err: file open or create failed, ", err)
@@ -67,5 +71,5 @@ func outputMarkdown(n *net, path string) {
 		log.Fatalln("Fatal: file write error, ", err)
 	}
 	fmt.Println(output)
-	fmt.Println("Markdown file has been saved at: " + path)
+	fmt.Println("Markdown file has been saved at: " + dir)
 }
