@@ -14,10 +14,15 @@ type Site struct {
 	Url   string
 	Title string
 	Desc  string
+	Links map[string]*Site
+}
+
+type SiteInfo struct {
+	Title string
 	Links map[string]void
 }
 
-func GetSiteInfo(urlString string) *Site {
+func GetSiteInfo(urlString string) *SiteInfo {
 	info := GetInfo()
 
 	// Request HTML page
@@ -42,19 +47,18 @@ func GetSiteInfo(urlString string) *Site {
 		return nil
 	}
 
-	site := Site {
-		Url: urlString,
+	siteInfo := SiteInfo {
 		Links: make(map[string]void),
 	}
 
 	// Read
 	// Find title
-	site.Title = doc.Find("title").Contents().Text()
+	siteInfo.Title = doc.Find("title").Contents().Text()
 
 	u, err := url.Parse(urlString)
 	if err != nil {
 		log.Println("Err: url parse error, ", err)
-		return &site
+		return &siteInfo
 	}
 	doc.Find("a").Each(func(i int, selection *goquery.Selection) {
 		link, exist := selection.Attr("href")
@@ -64,9 +68,10 @@ func GetSiteInfo(urlString string) *Site {
 				log.Println("Err: link's url parse error, ", err)
 				return
 			}
-			site.Links[u.ResolveReference(l).String()] = v
+			siteInfo.Links[u.ResolveReference(l).String()] = v
+			//siteInfo.Links = append(siteInfo.Links, u.ResolveReference(l).String())
 		}
 	})
 
-	return &site
+	return &siteInfo
 }

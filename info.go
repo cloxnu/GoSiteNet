@@ -20,7 +20,7 @@ type infoStruct struct {
 
 	UrlFilter struct {
 		UrlRegex    string `yaml:"url_regex"`
-		NetlocRegex string `yaml:"netloc_regex"`
+		DomainRegex string `yaml:"domain_regex"`
 		PathRegex   string `yaml:"path_regex"`
 	}
 
