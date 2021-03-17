@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
+	"time"
 )
 
 type void struct {}
@@ -32,13 +34,32 @@ func GetSiteInfo(urlString string) *SiteInfo {
 		return nil
 	}
 	req.Header.Add("User-Agent", info.UserAgent)
-	client := http.Client{}
+	client := http.Client {
+		Timeout: info.Timeout * time.Second,
+	}
 	res, err := client.Do(req)
 	if err != nil {
 		log.Println("Err: http request error, ", err)
 		return nil
 	}
 	defer res.Body.Close()
+
+	// Convert to utf-8 encoded HTML
+	// https://www.jianshu.com/p/fad896422f6e
+	//bytes, err := bufio.NewReader(res.Body).Peek(1024)
+	//if err != nil {
+	//	log.Println("Err: html utf-8 decode error, ", err)
+	//	return nil
+	//}
+	//encoding, _, _ := charset.DetermineEncoding(bytes, "")
+	//utf8Reader := transform.NewReader(res.Body, encoding.NewDecoder())
+	// https://github.com/PuerkitoBio/goquery/blob/7ebd145bd7b75771461b557dc2e53525191d3dd3/doc/tips.md
+	//_, encoding, _ := charset.DetermineEncoding(bytes, "")
+	//utfBody, err := iconv.NewReader(res.Body, encoding, "utf-8")
+	//if err != nil {
+	//	log.Println("Err: html utf-8 decode error, ", err)
+	//	return nil
+	//}
 
 	// Parse HTML
 	doc, err := goquery.NewDocumentFromReader(res.Body)
@@ -54,6 +75,7 @@ func GetSiteInfo(urlString string) *SiteInfo {
 	// Read
 	// Find title
 	siteInfo.Title = doc.Find("title").Contents().Text()
+	siteInfo.Title = strings.TrimSpace(strings.Trim(siteInfo.Title, "\n"))
 
 	u, err := url.Parse(urlString)
 	if err != nil {

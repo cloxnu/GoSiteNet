@@ -24,14 +24,11 @@ func printNet(n *net, site *Site, done *map[string]void, res *string, depth int)
 		return
 	}
 	for i := 0; i < depth; i++ {
-		*res += "> "
+		*res += "  "
 	}
-	*res += site.Title + " " + site.Url + "\n"
+	*res += "- " + site.Title + " " + site.Url + "\n"
 	(*done)[site.Url] = v
 	for link := range site.Links {
-		//if _, exist := n.Sites[link]; !exist {
-		//	continue
-		//}
 		printNet(n, n.Sites[link], done, res, depth + 1)
 	}
 }
@@ -63,9 +60,7 @@ func outputMarkdown(n *net, dir string) {
 	defer file.Close()
 	var output = ""
 	done := make(map[string]void)
-	for _, site := range n.Sites {
-		printNet(n, site, &done, &output, 0)
-	}
+	printNet(n, n.Sites[n.RootUrl], &done, &output, 0)
 	_, err = file.WriteString(output)
 	if err != nil {
 		log.Fatalln("Fatal: file write error, ", err)

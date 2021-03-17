@@ -5,15 +5,17 @@ import (
 	"io/ioutil"
 	"log"
 	"sync"
+	"time"
 )
 
 var lock = &sync.Mutex{}
 
 type infoStruct struct {
-	LoadPath        string `yaml:"load_path"`
-	OutputDir       string `yaml:"output_dir"`
-	SearchNum       int    `yaml:"search_num"`
-	OutputImageSize int    `yaml:"output_image_size"`
+	LoadPath        string        `yaml:"load_path"`
+	OutputDir       string        `yaml:"output_dir"`
+	SearchNum       int           `yaml:"search_num"`
+	OutputImageSize int           `yaml:"output_image_size"`
+	Timeout         time.Duration `yaml:"timeout"`
 
 	Url       string `yaml:"url"`
 	UserAgent string `yaml:"user_agent"`
