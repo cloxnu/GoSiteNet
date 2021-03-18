@@ -62,7 +62,7 @@ func GetSiteInfo(urlString string) *SiteInfo {
 	//	return nil
 	//}
 
-	bodyReader, err := DecodeHTMLBody(res.Body, "gb2312")
+	bodyReader, err := DecodeHTMLBody(res.Body, "gbk")
 	if err != nil {
 		log.Println("Err: utf-8 decode error, ", err)
 		return nil
@@ -81,7 +81,7 @@ func GetSiteInfo(urlString string) *SiteInfo {
 
 	// Read
 	// Find title
-	siteInfo.Title = doc.Find("title").Contents().Text()
+	siteInfo.Title = doc.Find("title").Text()
 	siteInfo.Title = strings.TrimSpace(strings.Trim(siteInfo.Title, "\n"))
 
 	u, err := url.Parse(urlString)

@@ -23,8 +23,6 @@ func detectContentCharset(body io.Reader) string {
 // DecodeHTMLBody returns an decoding reader of the html Body for the specified `charset`
 // If `charset` is empty, DecodeHTMLBody tries to guess the encoding from the content
 func DecodeHTMLBody(body io.Reader, charset string) (io.Reader, error) {
-	r := bufio.NewReader(body)
-	_, err := r.Peek(1024)
 	if charset == "" {
 		charset = detectContentCharset(body)
 	}
