@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func main() {
 	info := GetInfo()
 
@@ -9,9 +7,6 @@ func main() {
 	n.Init()
 	n.Run(info.SearchNum)
 
-	for _, site := range n.Sites {
-		fmt.Println(site.Url, site.Title)
-	}
 	outputMarkdown(&n, info.OutputDir)
 
 }

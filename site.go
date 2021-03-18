@@ -51,18 +51,25 @@ func GetSiteInfo(urlString string) *SiteInfo {
 	//	log.Println("Err: html utf-8 decode error, ", err)
 	//	return nil
 	//}
-	//encoding, _, _ := charset.DetermineEncoding(bytes, "")
-	//utf8Reader := transform.NewReader(res.Body, encoding.NewDecoder())
+	//_, encode, _ := charset.DetermineEncoding(bytes, "")
+	//fmt.Println("encoding: " + encode)
+	//utf8Reader := transform.NewReader(bytes, encoding.NewDecoder())
 	// https://github.com/PuerkitoBio/goquery/blob/7ebd145bd7b75771461b557dc2e53525191d3dd3/doc/tips.md
-	//_, encoding, _ := charset.DetermineEncoding(bytes, "")
-	//utfBody, err := iconv.NewReader(res.Body, encoding, "utf-8")
+	//_, encode, _ := charset.DetermineEncoding(bytes, "")
+	//utfBody, err := iconv.NewReader(res.Body, encode, "utf-8")
 	//if err != nil {
 	//	log.Println("Err: html utf-8 decode error, ", err)
 	//	return nil
 	//}
 
+	bodyReader, err := DecodeHTMLBody(res.Body, "gb2312")
+	if err != nil {
+		log.Println("Err: utf-8 decode error, ", err)
+		return nil
+	}
+
 	// Parse HTML
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	doc, err := goquery.NewDocumentFromReader(bodyReader)
 	if err != nil {
 		log.Println("Err: html parse error, ", err)
 		return nil
